@@ -1,6 +1,8 @@
 // Port of https://www.rabbitmq.com/tutorials/tutorial-one-python.html. Start the
 // hello_world_consume example in one shell, and run this in another.
 use amiquip::{Connection, Exchange, Publish, Result};
+use serde_json::json;
+
 use std::env;
 
 fn main() -> Result<()> {
@@ -21,8 +23,16 @@ fn send_message() -> Result<()> {
     // Get a handle to the direct exchange on our channel.
     let exchange = Exchange::direct(&channel);
 
+
+    // Testing json
+    let test_json = json!({
+	"url": "xyq.com",
+	"user_id": 1,
+	"audit_id": 10
+    });
+    
     // Publish a message to the "hello" queue.
-    exchange.publish(Publish::new(b"hello there", "hello"))?;
+    exchange.publish(Publish::new(test_json.to_string().as_bytes(), "hello"))?;
 
     connection.close()
 }
